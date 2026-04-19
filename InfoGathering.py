@@ -120,16 +120,20 @@ class GUI:
             if int(self.collection_age_variable.get()) <= 0:
                 messagebox.showerror("Invalid Entry", "Please enter a positive number")
                 self.collection_age_entry.delete(0, END)
+                self.collection_age_entry.focus()
             elif len(self.collection_age_variable.get()) >= 18 and len(self.collection_first_name_variable.get()) >= 18:
                 messagebox.showerror("Invalid Entry", "Please enter a shorter first name and age")
                 self.collection_first_name_entry.delete(0, END)
                 self.collection_age_entry.delete(0, END)
+                self.collection_first_name_entry.focus()
             elif len(self.collection_age_variable.get()) >= 18:
                 messagebox.showerror("Invalid Entry", "Please enter a shorter age")
                 self.collection_age_entry.delete(0, END)
+                self.collection_age_entry.focus()
             elif len(self.collection_first_name_variable.get()) >= 18:
                 messagebox.showerror("Invalid Entry", "Please enter a shorter first name")
                 self.collection_first_name_entry.delete(0, END)
+                self.collection_first_name_entry.focus()
             else:
                 person = Person(self.collection_first_name_variable.get(),
                                 self.collection_age_variable.get(),
