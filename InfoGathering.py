@@ -1,15 +1,19 @@
 """This file creates a tkinter window for the collection of various people
-data: their name, age and whether or not they have a mobile phone"""
+data: their name, age and whether or not they have a mobile phone.
+"""
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-from os import *
-
 
 
 class Person:
-    """person object stores the variables first name, age and phone_status."""
+    """Person object stores the variables first name, age and phone_status."""
+
     def __init__(self, first_name, age, phone_status):
+        """This function inputs three variables, age and first_name are mapped to
+        class specific atributes and phone status is changed from an integer to a string
+        message for later display
+        """
         self.first_name = first_name
         self.age = age
         if phone_status == 1:
@@ -21,27 +25,25 @@ class Person:
 
 
 class GUI:
-    """This class creates a graphical user interface window and handles all its 
-    functionality."""
+    """This class creates a graphical user interface window and handles all its
+    functionality.
+    """
+
     def __init__(self, parent):
-        """This function initialises the style used by the class, global 
+        """This function initialises the style used by the class, global
         variables/lists used by the class, widgets displayed in the window."""
         s=ttk.Style()
-        s.theme_use('default')
+        s.theme_use('clam')
         s.configure('Custom.TFrame', background='#da70d6')
         s.configure('Custom.TLabel', background='#da70d6')
         self.people = []
         self.displayed_person_index = 0
         self.collect_data_frame = ttk.Frame(parent)
         self.collect_data_frame.columnconfigure(0, weight=1)
-        self.collection_top_frame = ttk.Frame(self.collect_data_frame,
-            style='Custom.TFrame')
-        self.collection_title_label = ttk.Label(self.collection_top_frame,
-            text='Collecting Person Data',
-            style='Custom.TLabel')
+        self.collection_top_frame = ttk.Frame(self.collect_data_frame, style='Custom.TFrame')
+        self.collection_title_label = ttk.Label(self.collection_top_frame, text='Collecting Person Data', style='Custom.TLabel')
         self.collection_title_label.grid(column=0, row=0, padx=10, pady=10)
-        self.collection_show_all_button = ttk.Button(self.collection_top_frame,
-                                                    text='Show All', command=self.display_data_frame_func)
+        self.collection_show_all_button = ttk.Button(self.collection_top_frame, text='Show All', command=self.display_data_frame_func)
         self.collection_show_all_button.grid(column=1, row=0, padx=10, pady=10)
         self.collection_top_frame.grid(column=0, row=0, columnspan=2, sticky='nsew')
         self.collection_first_name_label = ttk.Label(self.collect_data_frame, text='First Name:')
@@ -91,7 +93,7 @@ class GUI:
         self.display_next_button.grid(column=1, row=4, padx=10, pady=10)
 
     def is_num(self, value):
-        """This function inputs a value and returns true if it is an integer and false if not"""
+        """This function inputs a value and returns true if it is an integer and false if not."""
         try:
             value = int(value)
             return True
@@ -99,57 +101,70 @@ class GUI:
             return False
 
     def display_data_frame_func(self):
-        """This function hides the collection frame and shows the display frame"""
+        """This function hides the collection frame and shows the display frame."""
         if len(self.people) >= 1:
             self.display_person_func(self.displayed_person_index)
         self.collect_data_frame.grid_forget()
         self.display_data_frame.grid(column=0, row=0, sticky='nsew', padx=10, pady=10)
 
     def collect_data_frame_func(self):
-        """This function shows the collection frame and hides the display frame"""
+        """This function shows the collection frame and hides the display frame."""
         self.display_data_frame.grid_forget()
         self.collect_data_frame.grid(column=0, row=0, sticky='nsew', padx=10, pady=10)
 
     def enter_data_func(self):
         """This function checks if the information the user has put into the entry widgets is 
-        valid and if so creates a 'person' object which is added to the 'people' list"""
+        valid and if so creates a 'person' object which is added to the 'people' list.
+        """
         if self.is_num(self.collection_age_variable.get()):
             if int(self.collection_age_variable.get()) <= 0:
                 messagebox.showerror("Invalid Entry", "Please enter a positive number")
-                self.collection_age_entry.delete(0,END)
+                self.collection_age_entry.delete(0, END)
+            elif len(self.collection_age_variable.get()) >= 18 and len(self.collection_first_name_variable.get()) >= 18:
+                messagebox.showerror("Invalid Entry", "Please enter a shorter first name and age")
+                self.collection_first_name_entry.delete(0, END)
+                self.collection_age_entry.delete(0, END)
+            elif len(self.collection_age_variable.get()) >= 18:
+                messagebox.showerror("Invalid Entry", "Please enter a shorter age")
+                self.collection_age_entry.delete(0, END)
+            elif len(self.collection_first_name_variable.get()) >= 18:
+                messagebox.showerror("Invalid Entry", "Please enter a shorter first name")
+                self.collection_first_name_entry.delete(0, END)
             else:
                 person = Person(self.collection_first_name_variable.get(),
-                        self.collection_age_variable.get(),
-                        self.collection_mobile_status_variable.get(),
-                        )
+                                self.collection_age_variable.get(),
+                                self.collection_mobile_status_variable.get(),
+                                )
                 self.people.append(person)
-                self.collection_first_name_entry.delete(0,END)
-                self.collection_age_entry.delete(0,END)
+                self.collection_first_name_entry.delete(0, END)
+                self.collection_age_entry.delete(0, END)
                 self.collection_mobile_status_variable.set(0)
-                self.people[-1].print_data()
         else:
             messagebox.showerror("Invalid Entry", "Please enter a number")
-            self.collection_age_entry.delete(0,END)
+            self.collection_age_entry.delete(0, END)
 
     def display_person_func(self, person_index):
-        """This function inputs an integer and updates child widgets of the display frame to display 
-        the information of a 'person' object in the 'people' list at the index of the 'poerson_index'"""
+        """This function inputs an integer and updates child widgets of the display frame to display
+        the information of a 'person' object in the 'people' list at the index of the 'poerson_index'.
+        """
         if len(self.people) != 0:
             self.display_first_name_label.configure(text=self.people[person_index].first_name)
             self.display_age_label.configure(text=self.people[person_index].age)
             self.display_phone_status_label.configure(text=f'{self.people[person_index].first_name} {self.people[person_index].phone_status}')
 
     def next_func(self):
-        """This function runs the 'display_person_func' function with the index of 
-        the next 'person' object in the 'people' list"""
+        """This function runs the 'display_person_func' function with the index of
+        the next 'person' object in the 'people' list.
+        """
         self.displayed_person_index += 1
         if self.displayed_person_index >= len(self.people):
             self.displayed_person_index = 0
         self.display_person_func(self.displayed_person_index)
-    
+
     def previous_func(self):
-        """This function runs the 'display_person_func' function with the index of 
-        the previous 'person' object in the 'people' list"""
+        """This function runs the 'display_person_func' function with the index of
+        the previous 'person' object in the 'people' list.
+        """
         self.displayed_person_index -= 1
         if -self.displayed_person_index >= len(self.people) + 1:
             self.displayed_person_index = len(self.people) - 1
@@ -159,7 +174,8 @@ class GUI:
 if __name__ == '__main__':
     root = Tk()
     window = GUI(root)
-    root.geometry("480x240")
+    root.geometry("480x256")
+    root.title("GatherInfo")
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
     root.mainloop()
